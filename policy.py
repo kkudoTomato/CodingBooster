@@ -10,21 +10,46 @@ class arrangement():
     def __init__(self,raw_data:dict) -> None:
         self.raw_data = raw_data
         self.calendar = dict()
-        for i in range(1,31):
+        for i in range(0,31):
             today = date.today()
-            dict[today + timedelta(days=i)] = []
+            target_date = today + timedelta(days=i)
+            self.calendar[target_date] = []
 
-    def normal_next_prac(self, prac_date:date, problem_number:int) -> list:
+    def get(self) -> dict:
+        return self.calendar
+
+    def arrange_base_on_date(self):
+        #print(self.raw_data)
+        for d,p in self.raw_data.items():
+            #print(d,p)
+            self.normal_next_prac(d,p)
+        
+        self.flatten()
+
+    def flatten(self):
+        for i in self.calendar:
+            self.calendar[i] = [val for sublist in self.calendar[i] for val in sublist]
+
+
+
+    def normal_next_prac(self, prac_date:date, problem_number:list) -> None:
+        today = date.today()
+        tmr = today + timedelta(days=1)
         next_1_day = prac_date + timedelta(days=1)
         next_2_day = prac_date + timedelta(days=2)
         next_4_day = prac_date + timedelta(days=4)
         next_week = prac_date + timedelta(days= 7)
         next_2_week = prac_date + timedelta(days= 15)
         next_month = prac_date + timedelta(days= 30)
-        #next_3_month = prac_date + timedelta(days= 90)
-        #next_6_month = prac_date + timedelta(days= 180)
-        return [problem_number, next_1_day,next_2_day,next_4_day,next_week,
-                next_2_week, next_month]
+        next_3_month = prac_date + timedelta(days= 90)
+        next_6_month = prac_date + timedelta(days= 180)
+        date_list = [next_1_day,next_2_day,next_4_day,next_week, next_2_week, next_month,next_3_month,next_6_month]
+        #print(prac_date,problem_number)
+
+        for i in date_list:
+            if i in self.calendar:
+                self.calendar[i].append(problem_number)
+        
 
     def failed_next_prac(self, failed: int) -> list:
         pass
@@ -36,13 +61,33 @@ class arrangement():
 
     def overall_next_prac(self) -> list:
         # self.raw_data = { date1: problem_num, d2: p4, ...}
-        for t, p in enumerate(self.raw_data):
-            print(t,p)
         # failed > normal > hardness and use solve time as a tie breaker
-
-    def overall_sort_algo(self, input_list:list) ->list:
-
+        #tbu
         pass
+
+        
+
+
+
+    def advance_by(self, target_date:date, problem_num:int,advance_date:int) ->None:
+        time_diff  = target_date - date.today()
+        while time_diff.days >= 0:
+            next_date = target_date - timedelta(days=advance_date)
+            time_diff = next_date-target_date
+            if problem_num not in self.calendar[next_date]:
+                self.calendar[next_date].append(problem_num)
+                self.calendar[target_date].remove(problem_num)
+                return
+
+
+    def delay_by(self, target_date:date, problem_num:int,delay_day:int) ->None:
+        # failed * 0.5 + normal * 0.4 + hardness * 0.1 and solve problem is super low can remove one category <10min
+        # category problems base on their normal date, and add problems base on that
+        self.calendar[target_date].remove(problem_num)
+        next_date = target_date + timedelta(days=delay_day)
+        if problem_num not in self.calendar[next_date]:
+            self.calendar[next_date].append(problem_num)
+    
 
 
 
