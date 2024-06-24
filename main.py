@@ -1,5 +1,6 @@
 from RW_Utils import rw_utils
 from policy import arrangement
+from datetime import date
 utils = rw_utils()
 utils.import_data()
 utils.categorized_by_time()
@@ -13,8 +14,11 @@ pracPlan = utils.getPracticePlan()
 policy = arrangement(problems)
 
 betterPlan = policy.distribute_work(pracPlan)
-for day,task in betterPlan.items():
-   print(day,task)
+today_task = betterPlan[date.today()]
+
+utils.write_md(today_task)
+#for day,task in betterPlan.items():
+   #print(day,task)
 
 #for i in todayProb:
     #print(i)

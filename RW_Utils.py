@@ -2,6 +2,7 @@ from os import path
 from os import walk
 import re
 from datetime import date
+from datetime import timedelta
 from policy import arrangement
 
 """
@@ -131,8 +132,15 @@ class rw_utils():
         self.practicePlan = policys.get()
 
 
-    def write_md(self):
-        pass
+    def write_md(self,problem_list):
+        tmr = date.today() + timedelta(days=1)
+        full_path=f'{path_dir}/{str(tmr)}-PROBLEMS.md'
+
+        with open(full_path,'w') as f:
+            for line in problem_list:
+                content = self.reducedProblemTitle[line]
+                f.write(content+ '\n')
+                print(content)
         
 
 
