@@ -1,7 +1,6 @@
-import os
 from os import path
+from os import walk
 import re
-import datetime
 from datetime import date
 from policy import arrangement
 
@@ -9,7 +8,8 @@ from policy import arrangement
 class read_data_utils provides utilities to read data, clean data, and sort data
 
 """
-path = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review/1st 50 Problems/1st 50 Leedcode Algos Log.md'
+#path = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review/1st 50 Problems/1st 50 Leedcode Algos Log.md'
+path_dir = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review'
 not_want_list= ['\n','','==START==']
 
 class rw_utils():
@@ -21,6 +21,7 @@ class rw_utils():
         self.reducedTimeProbNum = dict()
         self.reducedProblemTitle = dict()
         self.practicePlan = dict()
+        self.pathList = []
 
     def get_raw_data(self)->list:
         return self.problem_set
@@ -39,16 +40,27 @@ class rw_utils():
     """
     import_data grab data from target markdown files and add them into problem_set list
     """
-    def import_data(self):
-        with open(path) as practice_log:
-            n = 0
-            for line in practice_log:
-                #clean up inputs
-                list_current_line = self.clean_input(line)
+    def find_all_file_path(self):
+        for (dirpath, dirnames, filenames) in walk(path_dir):
+            for filename in filenames:
+                if re.search('(?i)Log',filename):
+                    self.pathList.append(f'{dirpath}/{filename}')
+        
+        #print(self.pathList)
 
-                n += 1
-                if len(list_current_line)> 0 and list_current_line[1] not in not_want_list :
-                    self.problem_set.append(list_current_line)
+    def import_data(self):
+        self.find_all_file_path()
+        for path in self.pathList:
+            with open(path) as practice_log:
+                n = 0
+                for line in practice_log:
+                    #clean up inputs
+                    list_current_line = self.clean_input(line)
+
+                    n += 1
+                    if len(list_current_line)> 0 and list_current_line[1] not in not_want_list :
+                        if list_current_line[0] != 'f':
+                            self.problem_set.append(list_current_line)
 
     """
     clean input get rid of unwanted symbols and emojis
@@ -88,11 +100,12 @@ class rw_utils():
     eg: {2024-06-19: [18,19,11] }
     """
     def categorized_by_time(self):
-        for i in range(1,len(self.problem_set)):
+        for i in range(len(self.problem_set)):
             x = re.search('\d{4}-\d\d?-\d\d?',self.problem_set[i][1])
             if x:
                 prev_match = date.fromisoformat(x.group(0))
-                self.reducedTimeProbNum[prev_match] = []
+                if prev_match not in self.reducedTimeProbNum:
+                    self.reducedTimeProbNum[prev_match] = []
             else:
                 prob_num = self.find_prob_num(self.problem_set[i])
                 self.reducedTimeProbNum[prev_match].append(prob_num)
@@ -106,7 +119,7 @@ class rw_utils():
     """
     def categorized_by_problem(self):
         reduceToTile = [i[1] for i in self.problem_set if re.search('[.*]',i[1])]
-        for line in range(1,len(self.problem_set)):
+        for line in range(len(self.problem_set)):
             if re.search('[.*]',self.problem_set[line][1]):
                 prob_num = self.find_prob_num(self.problem_set[line])
                 self.reducedProblemTitle[prob_num] = f'- [ ] {self.problem_set[line][1]}'

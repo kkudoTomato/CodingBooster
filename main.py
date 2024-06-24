@@ -1,5 +1,5 @@
 from RW_Utils import rw_utils
-
+from policy import arrangement
 utils = rw_utils()
 utils.import_data()
 utils.categorized_by_time()
@@ -10,16 +10,28 @@ time_problems = utils.get_reduced_time_data()
 todayProb = utils.getTodayProb()
 pracPlan = utils.getPracticePlan()
 
+policy = arrangement(problems)
+
+betterPlan = policy.distribute_work(pracPlan)
+for day,task in betterPlan.items():
+   print(day,task)
+
 #for i in todayProb:
     #print(i)
 
 #for i,v in problems.items():
-    #print(i,v)
+#    print(i,v)
 
 # for i,v in time_problems.items():
     # print(i,v)
 
-for i,v in pracPlan.items():
-    print(i,v)
+#for i,v in pracPlan.items():
+    #print(i,v)
+
+# summ = 0
+# for i in time_problems:
+    # summ += len(time_problems[i])
+# print(summ)
 
 #print(len(problems))
+

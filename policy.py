@@ -51,6 +51,36 @@ class arrangement():
                 self.calendar[i].append(problem_number)
         
 
+    """
+    distribute_work will equally distribute problems to each day 
+    """
+    def distribute_work(self,timeProb_dict):
+        temp_task = []
+        num_task = 0
+        for day in timeProb_dict:
+            num_task += len(timeProb_dict[day])
+        #find the average number of tasks per day
+        average_task = num_task//(len(timeProb_dict.keys()))
+        for day in timeProb_dict:
+            task_diff = len(timeProb_dict[day]) - average_task
+            if task_diff > 0:
+                temp_task.extend(timeProb_dict[day][-task_diff:])
+                timeProb_dict[day] = timeProb_dict[day][:average_task]
+            elif task_diff < 0:
+                task_diff = abs(task_diff)
+                timeProb_dict[day].extend(temp_task[:task_diff]) 
+                temp_task = temp_task[task_diff:]
+
+        
+        if temp_task:
+            for i in range(len(temp_task)):
+                timeProb_dict[list(timeProb_dict.keys())[i]].append(temp_task[i])
+
+        return timeProb_dict
+
+
+
+
     def failed_next_prac(self, failed: int) -> list:
         pass
 
