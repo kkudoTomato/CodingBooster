@@ -81,7 +81,7 @@ class arrangement():
 
 
 
-    def failed_next_prac(self, failed: int) -> list:
+    def sort_by_failed_time(self, failed: int) -> list:
         pass
 
     def hardness_next_prac(self, hardness: int) -> list:
