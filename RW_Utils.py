@@ -1,4 +1,3 @@
-from os import path
 from os import walk
 import re
 from datetime import date
@@ -9,9 +8,6 @@ from policy import arrangement
 class read_data_utils provides utilities to read data, clean data, and sort data
 
 """
-#path = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review/1st 50 Problems/1st 50 Leedcode Algos Log.md'
-path_dir = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review'
-not_want_list= ['\n','','==START==']
 
 class rw_utils():
 
@@ -23,6 +19,9 @@ class rw_utils():
         self.reducedProblemTitle = dict()
         self.practicePlan = dict()
         self.pathList = []
+
+        self.path_dir = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review'
+        self.not_want_list= ['\n','','==START==']
 
     def get_raw_data(self)->list:
         return self.problem_set
@@ -42,7 +41,7 @@ class rw_utils():
     import_data grab data from target markdown files and add them into problem_set list
     """
     def find_all_file_path(self):
-        for (dirpath, dirnames, filenames) in walk(path_dir):
+        for (dirpath, dirnames, filenames) in walk(self.path_dir):
             for filename in filenames:
                 if re.search('(?i)Log',filename):
                     self.pathList.append(f'{dirpath}/{filename}')
@@ -59,7 +58,7 @@ class rw_utils():
                     list_current_line = self.clean_input(line)
 
                     n += 1
-                    if len(list_current_line)> 0 and list_current_line[1] not in not_want_list :
+                    if len(list_current_line)> 0 and list_current_line[1] not in self.not_want_list :
                         if list_current_line[0] != 'f':
                             self.problem_set.append(list_current_line)
 
@@ -67,14 +66,13 @@ class rw_utils():
     clean input get rid of unwanted symbols and emojis
     """
     def clean_input(self,line):
-        not_want_list= ['\n','','==START==']
         list_line = line.split('|')
         """
         TBU
         this can be updated with a single for loop
         """
         #get rid of unwanted symbols such as '\n','', and '==START=='
-        list_line = [i.strip() for i in list_line if i not in not_want_list]
+        list_line = [i.strip() for i in list_line if i not in self.not_want_list]
         #get rid of the .md table formatter 
         list_line = [i for i in list_line if not re.search('----+',i)]
         #get rid of empty rows 
@@ -134,7 +132,7 @@ class rw_utils():
 
     def write_md(self,problem_list):
         tmr = date.today() + timedelta(days=1)
-        full_path=f'{path_dir}/{str(tmr)}-PROBLEMS.md'
+        full_path=f'{self.path_dir}/{str(tmr)}-PROBLEMS.md'
 
         with open(full_path,'w') as f:
             for line in problem_list:
