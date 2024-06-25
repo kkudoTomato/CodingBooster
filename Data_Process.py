@@ -5,18 +5,21 @@ class data_process():
     def __init__(self,problems_raw_data) -> None:
 
         self.problems_raw_data = problems_raw_data
+
         self.done_time_id_dict = dict()
         self.id_content_dict = dict()
         self.id_title_dict = dict()
         self.failed_times_id_dict = dict()
         self.working_time_id_dict = dict()
         self.tag_id_dict = dict()
+
         self.utils = data_process_utils()
         self.id_content_sort()
         self.done_time_id_sort()
         self.failed_times_id_sort()
         self.working_time_id_sort()
         self.tag_id_sort()
+        self.id_title_sort()
 
     """
     categorized_by_time function return a dict which key is the date, and the 

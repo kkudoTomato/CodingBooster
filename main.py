@@ -1,81 +1,40 @@
 from RW_Utils import rw_utils
 from policy import arrangement
 from datetime import date
+from datetime import timedelta
 from Data_Process import data_process
-def quick_print(aList):
-    if type(aList) == list:
-        for i,v in enumerate(aList):
-            print(i,v)
-    elif type(aList) == dict:
-        for i in aList:
-            print(i,aList[i])
+from Test_Utils import test_utils
 
-def check_num(aList):
-    summ = 0
-    if type(aList) == list:
-        print(len(aList))
-    elif type(aList) == dict:
-        for i in aList:
-            summ += len(aList[i])
-        print(summ)
 
+quick_test = test_utils()
 utils = rw_utils()
 utils.import_data()
-raw_data = utils.get_raw_data()
-#quick_print(raw_data)
+raw_data = utils.problem_raw_data
+#quick_test.quick_print_list_dict(raw_data)
 dp = data_process(raw_data)
 #dp.done_time_id_sort()
-#quick_print(dp.done_time_id_dict)
+#quick_test.quick_print_list_dict(dp.done_time_id_dict)
 #dp.id_title_sort()
-#quick_print(dp.id_title_dict)
-#quick_print(dp.id_content_dict)
-#quick_print(dp.working_time_id_dict)
-#quick_print(dp.failed_times_id_dict)
-#check_num(dp.failed_times_id_dict)
-#quick_print(dp.working_time_id_dict)
-#check_num(dp.working_time_id_dict)
+#quick_test.quick_print_list_dict(dp.id_title_dict)
+#quick_test.quick_print_list_dict(dp.id_content_dict)
+#quick_test.quick_print_list_dict(dp.working_time_id_dict)
+#quick_test.quick_print_list_dict(dp.failed_times_id_dict)
+#quick_test.check_problem_number(dp.failed_times_id_dict)
+#quick_test.quick_print_list_dict(dp.working_time_id_dict)
+#quick_test.check_problem_number(dp.working_time_id_dict)
 #dp.tag_id_sort()
 #print(len(dp.id_content_dict))
-quick_print(dp.tag_id_dict)
+#quick_test.quick_print_list_dict(dp.tag_id_dict)
+
+problem_review_plan = utils.genPracticePlan(dp.done_time_id_dict)
+#quick_test.quick_print_list_dict(problem_review_plan)
+tmr = date.today() + timedelta(days=1)
+tmr_problme = problem_review_plan[tmr]
+quick_test.quick_print_list_dict(tmr_problme)
+#quick_test.quick_print_list_dict(dp.id_title_dict)
+utils.write_md(tmr_problme,dp.id_title_dict)
+print()
 
 
 
-
-
-
-#utils.categorized_by_time()
-#utils.categorized_by_problem()
-#utils.genPracticePlan()
-#problems = utils.get_reduced_prob_data()
-#time_problems = utils.get_reduced_time_data()
-#todayProb = utils.getTodayProb()
-#pracPlan = utils.getPracticePlan()
-#
-#policy = arrangement(problems)
-
-#betterPlan = policy.distribute_work(pracPlan)
-#today_task = betterPlan[date.today()]
-
-#utils.write_md(today_task)
-#for day,task in betterPlan.items():
-   #print(day,task)
-
-#for i in todayProb:
-    #print(i)
-
-#for i,v in problems.items():
-#    print(i,v)
-
-# for i,v in time_problems.items():
-    # print(i,v)
-
-#for i,v in pracPlan.items():
-    #print(i,v)
-
-# summ = 0
-# for i in time_problems:
-    # summ += len(time_problems[i])
-# print(summ)
-
-#print(len(problems))
 

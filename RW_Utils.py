@@ -13,7 +13,7 @@ class rw_utils():
 
     def __init__(self) -> None:
         #problem contains raw data from the file
-        self.problem_set = list()
+        self.problem_raw_data = list()
         #reduced dict contains time as the key and problem numbers as the value. Format like {time: [p1,p2,...]}
         self.reducedTimeProbNum = dict()
         self.reducedProblemTitle = dict()
@@ -23,22 +23,8 @@ class rw_utils():
         self.path_dir = '/Users/door3/Documents/Obsidian Vault/一花一世界/1 工作学习/1 算法题总结/Leedcode Review'
         self.not_want_list= ['\n','','==START==']
 
-    def get_raw_data(self)->list:
-        return self.problem_set
-
-    def get_reduced_time_data(self)->list:
-        return self.reducedTimeProbNum
-
-    def get_reduced_prob_data(self)->list:
-        return self.reducedProblemTitle
-
-    def getTodayProb(self):
-        return self.practicePlan[date.today()]
-
-    def getPracticePlan(self):
-        return self.practicePlan
     """
-    import_data grab data from target markdown files and add them into problem_set list
+    import_data grab data from target markdown files and add them into problem_raw_data list
     """
     def find_all_file_path(self):
         for (dirpath, dirnames, filenames) in walk(self.path_dir):
@@ -60,7 +46,7 @@ class rw_utils():
                     n += 1
                     if len(list_current_line)> 0 and list_current_line[1] not in self.not_want_list :
                         if list_current_line[0] != 'f':
-                            self.problem_set.append(list_current_line)
+                            self.problem_raw_data.append(list_current_line)
 
     """
     clean input get rid of unwanted symbols and emojis
@@ -83,61 +69,22 @@ class rw_utils():
             list_line[0] = list_line[0][3:]
         return list_line
 
-
-    """
-    find_prob_num return the problem number in the target line 
-    """
-    def find_prob_num(self, problem_info) -> int:
-        problem_num = re.search('\d+.',problem_info[1])
-        int_problem_num = int(problem_num.group(0)[:-1])
-        return int_problem_num
-
-
-    """
-    categorized_by_time function return a dict which key is the date, and the 
-    values are the problem number that I have done that day
-    eg: {2024-06-19: [18,19,11] }
-    """
-    def categorized_by_time(self):
-        for i in range(len(self.problem_set)):
-            x = re.search('\d{4}-\d\d?-\d\d?',self.problem_set[i][1])
-            if x:
-                prev_match = date.fromisoformat(x.group(0))
-                if prev_match not in self.reducedTimeProbNum:
-                    self.reducedTimeProbNum[prev_match] = []
-            else:
-                prob_num = self.find_prob_num(self.problem_set[i])
-                self.reducedTimeProbNum[prev_match].append(prob_num)
-
-    
-
-    """
-    categorized_by_problem function return a dict which key is the problem number, and the 
-    values are the name and the link of the problems
-    eg: {88 : [[88. Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array/) }
-    """
-    def categorized_by_problem(self):
-        reduceToTile = [i[1] for i in self.problem_set if re.search('[.*]',i[1])]
-        for line in range(len(self.problem_set)):
-            if re.search('[.*]',self.problem_set[line][1]):
-                prob_num = self.find_prob_num(self.problem_set[line])
-                self.reducedProblemTitle[prob_num] = f'- [ ] {self.problem_set[line][1]}'
-
-
-    def genPracticePlan(self):
-        policys = arrangement(self.reducedTimeProbNum)
+    def genPracticePlan(self,time_id_dict):
+        policys = arrangement(time_id_dict)
         policys.arrange_base_on_date()
         self.practicePlan = policys.get()
+        return policys.distribute_work(self.practicePlan)
 
 
-    def write_md(self,problem_list):
+    def write_md(self,problem_list,content_dict):
         tmr = date.today() + timedelta(days=1)
-        full_path=f'{self.path_dir}/{str(tmr)}-PROBLEMS.md'
+        full_path=f'{self.path_dir}/REVIEW-PROBLEMS.md'
 
-        with open(full_path,'w') as f:
+        with open(full_path,'a') as f:
+            f.write(f'## {str(tmr)} problems\n')
             for line in problem_list:
-                content = self.reducedProblemTitle[line]
-                f.write(content+ '\n')
+                content = content_dict[line]
+                f.write('- [ ] ' + content+ '\n')
                 print(content)
         
 

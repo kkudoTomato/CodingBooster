@@ -17,8 +17,6 @@ class data_process_utils():
         problem_title = problem_info if re.search('[.*]',problem_info) else None
         return problem_title
 
-    def tag_find(self,problem_info) -> str:
-        pass
 
     def working_time_find(self,working_time) -> int:
         working_time = re.search('\d\d*',working_time)
