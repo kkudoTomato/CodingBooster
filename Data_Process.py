@@ -9,14 +9,14 @@ class data_process():
         self.done_time_id_dict = dict()
         self.id_content_dict = dict()
         self.id_title_dict = dict()
-        self.failed_times_id_dict = dict()
+        self.passrate_id_dict = dict()
         self.working_time_id_dict = dict()
         self.tag_id_dict = dict()
 
         self.utils = data_process_utils()
         self.id_content_sort()
         self.done_time_id_sort()
-        self.failed_times_id_sort()
+        self.passrate_id_sort()
         self.working_time_id_sort()
         self.tag_id_sort()
         self.id_title_sort()
@@ -63,14 +63,18 @@ class data_process():
     fill in the failed_times_id dict which key = failed times and values are a list of 
     problems that has this failed time
     """
-    def failed_times_id_sort(self):
+    def passrate_id_sort(self):
         for problem in self.id_content_dict:
-            failed_times = self.utils.failed_times_find(self.id_content_dict[problem][2])
-            if failed_times not in self.failed_times_id_dict:
-                self.failed_times_id_dict[failed_times] = [] 
-                self.failed_times_id_dict[failed_times].append(problem)
+            failed_times = self.utils.failed_times_find(self.id_content_dict[problem][3])
+            practice_times = self.utils.practice_times_find(self.id_content_dict[problem][2])
+            pass_rate = self.utils.pass_rate_cal(failed_times,practice_times)
+
+            if pass_rate not in self.passrate_id_dict:
+                self.passrate_id_dict[pass_rate] = [] 
+                self.passrate_id_dict[pass_rate].append(problem)
             else:
-                self.failed_times_id_dict[failed_times].append(problem)
+                self.passrate_id_dict[pass_rate].append(problem)
+    
 
 
     """

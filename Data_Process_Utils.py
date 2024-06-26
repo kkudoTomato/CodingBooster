@@ -25,3 +25,14 @@ class data_process_utils():
     def failed_times_find(self,failed_times) -> int:
         failed_times = re.search('\d\d*',failed_times)
         return failed_times.group(0) if failed_times else '???'
+
+    def practice_times_find(self,practice_times) -> int:
+        practice_times = re.search('\d\d*',practice_times)
+        return practice_times.group(0) if practice_times else '???'
+
+    def pass_rate_cal(self,failed_times,practice_times) -> float:
+        if failed_times.isdigit() and practice_times.isdigit():
+            pass_rate = round(float(failed_times)/float(practice_times),1) 
+            return pass_rate
+        else:
+            return '???'

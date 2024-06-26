@@ -5,7 +5,7 @@ from datetime import timedelta
 Last Finished Time : | Hardness | Problem Name | Tag | Failed Times | Solve Time |  
 
 """
-class arrangement():
+class arrangement:
 
     def __init__(self,raw_data:dict) -> None:
         self.raw_data = raw_data
@@ -15,8 +15,6 @@ class arrangement():
             target_date = today + timedelta(days=i)
             self.calendar[target_date] = []
 
-    def get(self) -> dict:
-        return self.calendar
 
     def arrange_base_on_date(self):
         #print(self.raw_data)
@@ -49,7 +47,21 @@ class arrangement():
         for i in date_list:
             if i in self.calendar:
                 self.calendar[i].append(problem_number)
+
+    def add_in_freq_miss_questions(self,missed_q,question_list):
+        i = 0
+        val_list = list(question_list.keys())
+        while missed_q:
+            q = missed_q.pop()
+            #print(missed_q)
+            #print(question_list[val_list[i]])
+            question_list[val_list[i]].append(q)
+            #print(question_list[val_list[i]])
+            i = (i + 1) % len(question_list)
+        return question_list
+
         
+
 
     """
     distribute_work will equally distribute problems to each day 

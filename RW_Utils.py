@@ -62,7 +62,7 @@ class rw_utils():
         #get rid of the .md table formatter 
         list_line = [i for i in list_line if not re.search('----+',i)]
         #get rid of empty rows 
-        list_line = [list_line[i] for i in range(len(list_line)) if i not in range(3,5) ]
+        list_line = [list_line[i] for i in range(len(list_line)) if i != 4 ]
         #update working time if I don't solve the problem replace 'X' with 59min
         if len(list_line) > 0:
             list_line[-1] = '59min' if list_line[-1] != '' and not re.search('\d\d?min',list_line[-1]) else list_line[-1]
