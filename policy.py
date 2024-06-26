@@ -66,7 +66,9 @@ class arrangement():
             if task_diff > 0:
                 temp_task.extend(timeProb_dict[day][-task_diff:])
                 timeProb_dict[day] = timeProb_dict[day][:average_task]
-            elif task_diff < 0:
+        for day in timeProb_dict:
+            task_diff = len(timeProb_dict[day]) - average_task
+            if task_diff < 0:
                 task_diff = abs(task_diff)
                 timeProb_dict[day].extend(temp_task[:task_diff]) 
                 temp_task = temp_task[task_diff:]
